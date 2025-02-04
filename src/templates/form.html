@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>This is form for - {{form}}</h1>
+    <form id="flask-form" action="/process" method="post">
+        <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name"/>
+        </div>
+         <div>
+        <label for="pass">Pass:</label>
+        <input type="text" name="pass" id="pass"/>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

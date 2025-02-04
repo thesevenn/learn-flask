@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, render_template
 app = Flask(__name__)
 
 
@@ -32,6 +32,18 @@ def hello_handler(name):
             f"Hello {name}, What you are up to?</h1>")
 
 
+@app.route("/process", methods=["POST", "GET"])
+def handle_form():
+    if request.method == "GET":
+        return render_template("form.html", form="User Details")
+    name = request.form["name"]
+    pws = request.form["pass"]
+    if not name or not pws:
+        return "Cannot be empty!!"
+    else:
+        return f"Thank you for your input, {name}, with password: {pws}"
+
+
 @app.route("/login", methods=["POST"])
 def login_handler():
     name = request.form["name"]
@@ -40,6 +52,14 @@ def login_handler():
         return jsonify({"status": "success", "user": "andrew", "message": "Welcome back!, login success"})
     else:
         return jsonify({"status": "failure", "user": "Not found", "message": "Login Failed!!, Invalid credentials"})
+
+
+@app.route("/jinja", methods=["GET"])
+def handle_template():
+    return render_template("example.html",
+                           test=True,
+                           task="Today tasks",
+                           tasks=["Good work", "Other work", "More work", "Another task"])
 
 
 if __name__ == "__main__":

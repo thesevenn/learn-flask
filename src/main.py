@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 app = Flask(__name__)
 
 
@@ -24,6 +24,14 @@ def user_handler(_id):
         return jsonify({"message": f"Your data is found at x1dfa_{_id}"})
 
 
+@app.route("/hello/<name>", methods=["GET"])
+def hello_handler(name):
+    if name == "mike":
+        return redirect("/")
+    return (f"<h1 style='font-weight:400;font-size:60px;color:turquoise;font-family:sans-serif;'>"
+            f"Hello {name}, What you are up to?</h1>")
+
+
 @app.route("/login", methods=["POST"])
 def login_handler():
     name = request.form["name"]
@@ -35,4 +43,4 @@ def login_handler():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

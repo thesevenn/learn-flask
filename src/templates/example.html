@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+    <script src="{{url_for('static',filename='script.js')}}" defer></script>
     <title>Jinja Practice</title>
 </head>
 <body>
@@ -15,6 +17,6 @@
         <li>{{task}}</li>
         {% endfor %}
     </ul>
-
+    <img src="{{url_for('static',filename='image.jpeg')}}" alt="Some image"/>
 </body>
 </html>

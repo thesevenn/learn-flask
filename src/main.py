@@ -1,5 +1,9 @@
-from flask import Flask, request, jsonify, redirect, render_template
+from flask import Flask, request, jsonify, redirect, render_template, session
+from routes.user.route import user
 app = Flask(__name__)
+
+app.secret_key = "random_secret_key"
+app.register_blueprint(blueprint=user, url_prefix="/user")
 
 
 @app.route("/",  methods=["GET", "POST"])
@@ -10,6 +14,20 @@ def handler():
         return jsonify({"name": "George"})
 
 
+@app.route("/dashboard", methods=["GET", "POST"])
+def dashboard_handler():
+    if request.method == "GET":
+        try:
+            username = session["user"]
+            upass = session["pass"]
+            if not username or not upass:
+                return redirect("/login")
+            else:
+                return render_template("dashboard.html", username=username)
+        except KeyError as ky:
+            return redirect("/login")
+
+
 def post():
     name = request.form["name"]
     upass = request.form["pass"]
@@ -18,10 +36,7 @@ def post():
 
 @app.route("/user/<int:_id>", methods=["GET"])
 def user_handler(_id):
-    if request.method == "POST":
-        return jsonify({"error": "Method not Allowed"}), 405
-    else:
-        return jsonify({"message": f"Your data is found at x1dfa_{_id}"})
+    return jsonify({"message": f"Your data is found at x1dfa_{_id}"})
 
 
 @app.route("/hello/<name>", methods=["GET"])
@@ -44,14 +59,30 @@ def handle_form():
         return f"Thank you for your input, {name}, with password: {pws}"
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST","GET"])
 def login_handler():
-    name = request.form["name"]
-    upass = request.form["pass"]
-    if name == "andrew" and upass == "xj3j94;1":
-        return jsonify({"status": "success", "user": "andrew", "message": "Welcome back!, login success"})
+    if request.method == "POST":
+        name = request.form["username"]
+        upass = request.form["password"]
+        if not name or not upass:
+            return f"Invalid input, try again"
+
+        session["user"] = name
+        session["pass"] = upass
+        return redirect("/dashboard")
     else:
-        return jsonify({"status": "failure", "user": "Not found", "message": "Login Failed!!, Invalid credentials"})
+        return render_template("login.html")
+
+
+@app.route("/logout", methods=["GET"])
+def logout_handler():
+    try:
+        session.pop("user")
+        session.pop("pass")
+        return redirect("/login")
+    except KeyError as ky:
+        print(f"Error: {ky}")
+        return redirect("/dashboard")
 
 
 @app.route("/jinja", methods=["GET"])

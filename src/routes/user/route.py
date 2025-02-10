@@ -16,7 +16,7 @@ def new_handler():
         name = request.form["name"]
         age = request.form["age"]
         _id = request.form["id"]
-        users.append({name: name, age: age,id:_id})
+        users.append({name: name, age: age, id: _id})
         return f"Hello, {name}, {age}"
     except KeyError as ky:
         print(f"Error: {ky}")
@@ -32,3 +32,8 @@ def remove_user(_id):
     except ValueError as e:
         print(f"Error: {e}")
         return f"User not found with {_id}"
+
+
+@user.route("/*", methods=["GET", "POST", "DELETE", "PUT", "UPDATE"])
+def error_handler():
+    return "Error: Not found", 404

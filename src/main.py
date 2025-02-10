@@ -59,7 +59,7 @@ def handle_form():
         return f"Thank you for your input, {name}, with password: {pws}"
 
 
-@app.route("/login", methods=["POST","GET"])
+@app.route("/login", methods=["POST", "GET"])
 def login_handler():
     if request.method == "POST":
         name = request.form["username"]
@@ -91,6 +91,21 @@ def handle_template():
                            test=True,
                            task="Today tasks",
                            tasks=["Good work", "Other work", "More work", "Another task"])
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("not_found.html")
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template("server_error.html"), 404
+
+
+@app.route("/<path:path>")
+def error_handler(path):
+    return render_template("not_found.html"), 404
 
 
 if __name__ == "__main__":
